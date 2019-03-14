@@ -40,15 +40,22 @@ class Index:
     if (exists and not update):
       return False;
 
+    ext = filename[filename.rfind(".")+1:];
+    if (ext == "maff"):
+      return self.add_maff(filename, exists);
+    else:
+      print("Unrecognized file type: \"%s\"" % ( filename ));
+
+  def add_maff(self, filename, exists):
     fd = maflib.MAF(filename);
     url = fd.url;
     fqdn = urlsplit(url).netloc;
     dn = get_tld(url);
 
     if (exists):
-      self.writer.update_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=dn, date=fd.date, title=fd.title, content=fd.read_index());
+      self.writer.update_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=fd.date, title=fd.title, content=fd.read_index());
     else:
-      self.writer.add_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=dn, date=fd.date, title=fd.title, content=fd.read_index());
+      self.writer.add_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=fd.date, title=fd.title, content=fd.read_index());
 
     fd.close();
     return True;

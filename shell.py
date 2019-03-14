@@ -5,10 +5,12 @@ import tempfile;
 import webbrowser;
 import zipfile;
 
+from index import Index;
+
 class Shell:
 
   def __init__(self, name, location, histfile="~/.web_history_shell_history"):
-    self.index = maflib.MAFIndex(name);
+    self.index = Index(name);
     self.location = location;
     self.prompt = "web> ";
     self.histfile = os.path.expanduser(histfile);

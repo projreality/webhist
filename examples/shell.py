@@ -60,15 +60,25 @@ class Shell:
       self.pages.append(result["id"]);
 
   def open(self, id):
-    tempdir = tempfile.mkdtemp();
-    self.tempdirs.append(tempdir);
-    fd = zipfile.ZipFile(os.path.join(self.location, self.pages[id]));
-    fd.extractall(tempdir);
-    fd.close();
+    path = os.path.join(self.location, self.pages[id]);
+    ext = path[path.rfind(".")+1:];
+    print(path);
+    print(ext);
 
-    subdir = os.listdir(tempdir)[0];
-    path = os.path.join(tempdir, subdir, "index.html");
-    webbrowser.open(path);
+    if (ext == "html"):
+      webbrowser.open(path);
+    elif (ext == "maff"):
+      tempdir = tempfile.mkdtemp();
+      self.tempdirs.append(tempdir);
+      fd = zipfile.ZipFile(path);
+      fd.extractall(tempdir);
+      fd.close();
+
+      subdir = os.listdir(tempdir)[0];
+      path = os.path.join(tempdir, subdir, "index.html");
+      webbrowser.open(path);
+    else:
+      print("Error: unrecognized file type for \"%s\"" % ( self.pages[id] ));
 
 if (__name__ == "__main__"):
   shell = Shell("/var/lib/annex/web_history/index", "/var/lib/annex/web_history");

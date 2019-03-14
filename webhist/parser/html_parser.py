@@ -27,7 +27,7 @@ class HTMLParser:
         date_str = date_str[:date_str.find("(")-1];
         date = parser.parse(date_str);
 
-    soup = BeautifulSoup(content);
+    soup = BeautifulSoup(content, "lxml");
     for script in soup([ "script", "style" ]):
       script.extract();
     content = soup.get_text();

@@ -8,6 +8,7 @@ from whoosh.qparser.dateparse import DateParserPlugin;
 
 from parser import Parser;
 from maff_parser import MAFFParser;
+from html_parser import HTMLParser;
 
 class Index:
 

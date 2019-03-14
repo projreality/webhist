@@ -42,23 +42,29 @@ class Index:
 
     ext = filename[filename.rfind(".")+1:];
     if (ext == "maff"):
-      return self.add_maff(filename, exists);
+      ( url, fqdn, dn, date, title, content ) = self.parse_maff(filename);
     else:
       print("Unrecognized file type: \"%s\"" % ( filename ));
+      return False;
 
-  def add_maff(self, filename, exists):
+    if (exists):
+      self.writer.update_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=date, title=title, content=content);
+    else:
+      self.writer.add_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=date, title=title, content=content);
+
+    return True;
+
+  def parse_maff(self, filename):
     fd = maflib.MAF(filename);
     url = fd.url;
     fqdn = urlsplit(url).netloc;
     dn = get_tld(url);
-
-    if (exists):
-      self.writer.update_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=fd.date, title=fd.title, content=fd.read_index());
-    else:
-      self.writer.add_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=fd.date, title=fd.title, content=fd.read_index());
-
+    date = fd.date;
+    title = fd.title;
+    content = fd.read_index();
     fd.close();
-    return True;
+
+    return ( url, fqdn, dn, date, title, content );
 
   def add_path(self, path, update=False, verbose=False):
     i = 0;

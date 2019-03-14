@@ -6,9 +6,9 @@ from whoosh.index import create_in, EmptyIndexError, open_dir;
 from whoosh.qparser import QueryParser;
 from whoosh.qparser.dateparse import DateParserPlugin;
 
-from parser import Parser;
-from maff_parser import MAFFParser;
-from html_parser import HTMLParser;
+from parser.parser import Parser;
+from parser.maff_parser import MAFFParser;
+from parser.html_parser import HTMLParser;
 
 class Index:
 

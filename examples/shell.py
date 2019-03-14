@@ -5,12 +5,12 @@ import tempfile;
 import webbrowser;
 import zipfile;
 
-from index import Index;
+import webhist;
 
 class Shell:
 
   def __init__(self, name, location, histfile="~/.web_history_shell_history"):
-    self.index = Index(name);
+    self.index = webhist.Index(name);
     self.location = location;
     self.prompt = "web> ";
     self.histfile = os.path.expanduser(histfile);

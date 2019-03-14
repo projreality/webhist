@@ -1,3 +1,4 @@
+from bs4 import BeautifulSoup;
 from dateutil import parser;
 from tld import get_tld;
 from urlparse import urlsplit;
@@ -25,6 +26,14 @@ class HTMLParser:
         date_str = line[40:-2];
         date_str = date_str[:date_str.find("(")-1];
         date = parser.parse(date_str);
+
+    soup = BeautifulSoup(content);
+    for script in soup([ "script", "style" ]):
+      script.extract();
+    content = soup.get_text();
+    lines = ( line.strip() for line in content.splitlines() );
+    chunks = ( phrase.strip() for line in lines for phrase in line.split("  "));
+    content = "\n".join(chunk for chunk in chunks if chunk);
 
     return ( url, fqdn, dn, date, title, content );
 

@@ -1,12 +1,13 @@
 import maflib;
 from os import listdir, mkdir;
 from os.path import join;
-from tld import get_tld;
-from urlparse import urlsplit;
 from whoosh.fields import DATETIME, ID, Schema, STORED, TEXT;
 from whoosh.index import create_in, EmptyIndexError, open_dir;
 from whoosh.qparser import QueryParser;
 from whoosh.qparser.dateparse import DateParserPlugin;
+
+from parser import Parser;
+from maff_parser import MAFFParser;
 
 class Index:
 
@@ -41,30 +42,19 @@ class Index:
       return False;
 
     ext = filename[filename.rfind(".")+1:];
-    if (ext == "maff"):
-      ( url, fqdn, dn, date, title, content ) = self.parse_maff(filename);
-    else:
+    try:
+      parser = Parser.parsers[ext];
+      ( url, fqdn, dn, date, title, content ) = parser.parse(filename);
+    except KeyError:
       print("Unrecognized file type: \"%s\"" % ( filename ));
       return False;
 
     if (exists):
-      self.writer.update_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=date, title=title, content=content);
+      self.writer.update_document(id=unicode(filename, "UTF-8"), url=url, fqdn=fqdn, dn=dn, date=date, title=title, content=content);
     else:
-      self.writer.add_document(id=unicode(filename, "UTF-8"), url=unicode(url, "UTF-8"), fqdn=unicode(fqdn, "UTF-8"), dn=unicode(dn, "UTF-8"), date=date, title=title, content=content);
+      self.writer.add_document(id=unicode(filename, "UTF-8"), url=url, fqdn=fqdn, dn=dn, date=date, title=title, content=content);
 
     return True;
-
-  def parse_maff(self, filename):
-    fd = maflib.MAF(filename);
-    url = fd.url;
-    fqdn = urlsplit(url).netloc;
-    dn = get_tld(url);
-    date = fd.date;
-    title = fd.title;
-    content = fd.read_index();
-    fd.close();
-
-    return ( url, fqdn, dn, date, title, content );
 
   def add_path(self, path, update=False, verbose=False):
     i = 0;

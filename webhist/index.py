@@ -47,8 +47,7 @@ class Index:
       parser = Parser.parsers[ext];
       ( url, fqdn, dn, date, title, content ) = parser.parse(filename);
     except KeyError:
-      print("Unrecognized file type: \"%s\"" % ( filename ));
-      return False;
+      raise Exception("Unrecognized file type: \"%s\"" % ( filename ));
 
     if (exists):
       self.writer.update_document(id=unicode(filename, "UTF-8"), url=url, fqdn=fqdn, dn=dn, date=date, title=title, content=content);
@@ -65,25 +64,24 @@ class Index:
     skipped = [ ];
     error = [ ];
     for filename in files:
-      if (filename[-5:] == ".maff"):
-        try:
-          fname = join(path, filename);
-          res = self.add(fname, update);
-          if (res):
-            added.append(fname);
-            if (verbose):
-              print(fname);
-          else:
-            skipped.append(fname);
-            if (verbose):
-              print("-%s (already in index)" % ( fname, ));
-        except Exception as e:
-          error.append(fname);
+      try:
+        fname = join(path, filename);
+        res = self.add(fname, update);
+        if (res):
+          added.append(fname);
           if (verbose):
-            print("-%s (%s: %s)" % ( fname, e.__class__.__name__, e ));
-        i = i + 1;
-        if (i % 1000 == 0):
-          self.commit();
+            print(fname);
+        else:
+          skipped.append(fname);
+          if (verbose):
+            print("-%s (already in index)" % ( fname, ));
+      except Exception as e:
+        error.append(fname);
+        if (verbose):
+          print("-%s (%s: %s)" % ( fname, e.__class__.__name__, e ));
+      i = i + 1;
+      if (i % 1000 == 0):
+        self.commit();
     self.commit();
 
     return ( added, skipped, error );

@@ -5,7 +5,7 @@ long_description = fd.read();
 fd.close();
 
 setup(name              = "webhist",
-      version           = "0.1.0",
+      version           = "1.0.0",
       packages          = find_packages(),
       author            = "Samuel Li",
       author_email      = "sli@projreality.com",

@@ -1,3 +1,4 @@
+import argparse;
 import maflib;
 import os;
 import readline;
@@ -81,5 +82,13 @@ class Shell:
       print("Error: unrecognized file type for \"%s\"" % ( self.pages[id] ));
 
 if (__name__ == "__main__"):
-  shell = Shell("/var/lib/annex/web_history/index", "/var/lib/annex/web_history");
+  parser = argparse.ArgumentParser();
+  parser.add_argument("location", type=str, help="Location of web archive files");
+  parser.add_argument("-i", type=str, default=None, help="Location of index (default is {location}/index)");
+  args = parser.parse_args();
+
+  if (args.i is None):
+    args.i = args.location + "/index";
+
+  shell = Shell(args.i, args.location);
   shell.run();

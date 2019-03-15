@@ -1,4 +1,3 @@
-import maflib;
 from os import listdir, mkdir;
 from os.path import join;
 from whoosh.fields import DATETIME, ID, Schema, STORED, TEXT;

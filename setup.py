@@ -12,5 +12,6 @@ setup(name              = "webhist",
       url               = "http://www.projreality.com/webhist",
       description       = "Saved webpage index and search",
       long_description  = long_description,
-      license           = "https://www.gnu.org/licenses/lgpl.html"
+      license           = "https://www.gnu.org/licenses/lgpl.html",
+      install_requires  = [ "bs4", "python-dateutil", "maflib", "tld", "whoosh" ]
      );

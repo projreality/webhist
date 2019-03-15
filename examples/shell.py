@@ -13,7 +13,7 @@ class Shell:
   def __init__(self, name, location, histfile="~/.web_history_shell_history"):
     self.index = webhist.Index(name);
     self.location = location;
-    self.prompt = "web> ";
+    self.prompt = "webhist> ";
     self.histfile = os.path.expanduser(histfile);
     try:
       readline.read_history_file(self.histfile);
@@ -41,6 +41,8 @@ class Shell:
       self.search(" ".join(cmd[1:]));
     elif ((cmd[0] == "o") or (cmd[0] == "open")):
       self.open(int(cmd[1]));
+    elif ((cmd[0] == "h") or (cmd[0] == "help") or (cmd[0] == "?")):
+      self.help();
     elif (cmd[0] == ""):
       return;
     else:
@@ -80,6 +82,23 @@ class Shell:
       webbrowser.open(path);
     else:
       print("Error: unrecognized file type for \"%s\"" % ( self.pages[id] ));
+
+  def help(self):
+    print("\nCommands");
+    print("--------\n");
+    print("search {query}     Search the index using a Python Whoosh style query.");
+    print("                   The default field is \"content\"\n");
+    print("open {id}          Open the webpage from search result # {id}\n");
+    print("help               Show this help page\n");
+    print("quit               Quit");
+    print("exit               Quit");
+    print("CTRL-D             Quit\n");
+    print("Shortcuts");
+    print("---------\n");
+    print("s {query}          Same as search {query}");
+    print("o {id}             Same as open {id}");
+    print("h                  Same as help");
+    print("?                  Same as help\n");
 
 if (__name__ == "__main__"):
   parser = argparse.ArgumentParser();

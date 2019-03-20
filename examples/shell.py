@@ -71,15 +71,9 @@ class Shell:
     if (ext == "html"):
       webbrowser.open(path);
     elif (ext == "maff"):
-      tempdir = tempfile.mkdtemp();
+      fd = maflib.MAF(path);
+      tempdir = fd.show();
       self.tempdirs.append(tempdir);
-      fd = zipfile.ZipFile(path);
-      fd.extractall(tempdir);
-      fd.close();
-
-      subdir = os.listdir(tempdir)[0];
-      path = os.path.join(tempdir, subdir, "index.html");
-      webbrowser.open(path);
     else:
       print("Error: unrecognized file type for \"%s\"" % ( self.pages[id] ));
 

@@ -1,3 +1,4 @@
+import argparse;
 import maflib;
 import os;
 import readline;
@@ -12,7 +13,7 @@ class Shell:
   def __init__(self, name, location, histfile="~/.web_history_shell_history"):
     self.index = webhist.Index(name);
     self.location = location;
-    self.prompt = "web> ";
+    self.prompt = "webhist> ";
     self.histfile = os.path.expanduser(histfile);
     try:
       readline.read_history_file(self.histfile);
@@ -40,6 +41,8 @@ class Shell:
       self.search(" ".join(cmd[1:]));
     elif ((cmd[0] == "o") or (cmd[0] == "open")):
       self.open(int(cmd[1]));
+    elif ((cmd[0] == "h") or (cmd[0] == "help") or (cmd[0] == "?")):
+      self.help();
     elif (cmd[0] == ""):
       return;
     else:
@@ -60,16 +63,45 @@ class Shell:
       self.pages.append(result["id"]);
 
   def open(self, id):
-    tempdir = tempfile.mkdtemp();
-    self.tempdirs.append(tempdir);
-    fd = zipfile.ZipFile(os.path.join(self.location, self.pages[id]));
-    fd.extractall(tempdir);
-    fd.close();
+    path = os.path.join(self.location, self.pages[id]);
+    ext = path[path.rfind(".")+1:];
+    print(path);
+    print(ext);
 
-    subdir = os.listdir(tempdir)[0];
-    path = os.path.join(tempdir, subdir, "index.html");
-    webbrowser.open(path);
+    if (ext == "html"):
+      webbrowser.open(path);
+    elif (ext == "maff"):
+      fd = maflib.MAF(path);
+      tempdir = fd.show();
+      self.tempdirs.append(tempdir);
+    else:
+      print("Error: unrecognized file type for \"%s\"" % ( self.pages[id] ));
+
+  def help(self):
+    print("\nCommands");
+    print("--------\n");
+    print("search {query}     Search the index using a Python Whoosh style query.");
+    print("                   The default field is \"content\"\n");
+    print("open {id}          Open the webpage from search result # {id}\n");
+    print("help               Show this help page\n");
+    print("quit               Quit");
+    print("exit               Quit");
+    print("CTRL-D             Quit\n");
+    print("Shortcuts");
+    print("---------\n");
+    print("s {query}          Same as search {query}");
+    print("o {id}             Same as open {id}");
+    print("h                  Same as help");
+    print("?                  Same as help\n");
 
 if (__name__ == "__main__"):
-  shell = Shell("/var/lib/annex/web_history/index", "/var/lib/annex/web_history");
+  parser = argparse.ArgumentParser();
+  parser.add_argument("location", type=str, help="Location of web archive files");
+  parser.add_argument("-i", type=str, default=None, help="Location of index (default is {location}/index)");
+  args = parser.parse_args();
+
+  if (args.i is None):
+    args.i = args.location + "/index";
+
+  shell = Shell(args.i, args.location);
   shell.run();

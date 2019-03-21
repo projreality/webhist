@@ -1,6 +1,6 @@
 from setuptools import find_packages, setup;
 
-fd = open("README");
+fd = open("README.rst");
 long_description = fd.read();
 fd.close();
 

@@ -1,16 +1,17 @@
 from setuptools import find_packages, setup;
 
-fd = open("README");
+fd = open("README.rst");
 long_description = fd.read();
 fd.close();
 
 setup(name              = "webhist",
-      version           = "0.1.0",
+      version           = "1.0.0",
       packages          = find_packages(),
       author            = "Samuel Li",
       author_email      = "sli@projreality.com",
-      url               = "http://www.projreality.com/webhist",
+      url               = "https://github.com/projreality/webhist",
       description       = "Saved webpage index and search",
       long_description  = long_description,
-      license           = "https://www.gnu.org/licenses/lgpl.html"
+      license           = "https://www.gnu.org/licenses/lgpl.html",
+      install_requires  = [ "bs4", "python-dateutil", "maflib", "tld", "whoosh" ]
      );

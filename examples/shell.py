@@ -43,6 +43,8 @@ class Shell:
       self.open(int(cmd[1]));
     elif ((cmd[0] == "h") or (cmd[0] == "help") or (cmd[0] == "?")):
       self.help();
+    elif ((cmd[0] == "x") or (cmd[0] == "exit") or (cmd[0] == "q") or (cmd[0] == "quit")):
+      exit();
     elif (cmd[0] == ""):
       return;
     else:
@@ -92,7 +94,9 @@ class Shell:
     print("s {query}          Same as search {query}");
     print("o {id}             Same as open {id}");
     print("h                  Same as help");
-    print("?                  Same as help\n");
+    print("?                  Same as help");
+    print("q                  Same as quit");
+    print("x                  Same as quit\n");
 
 if (__name__ == "__main__"):
   parser = argparse.ArgumentParser();
